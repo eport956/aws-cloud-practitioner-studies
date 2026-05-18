@@ -34,3 +34,32 @@ Security and Compliance is a shared responsibility between AWS and the customer.
 
 * **AWS (Security OF the Cloud):** Responsible for the physical infrastructure (Hardware, Software, Facilities).
 * **Customer (Security IN the Cloud):** Responsible for data encryption, Identity Access Management (IAM), and network firewall configuration.
+
+  ---
+
+## Section 4: IAM - Identity and Access Management 🔐
+
+IAM is the administrative service that manages who can access your AWS environment and what they can do.
+
+### 1. The Root User vs. IAM Users
+* **Root User:** The account creator. It has "God Mode" (full access). 
+    * **Best Practice:** Use it ONLY for initial setup and emergency tasks. **Never use it for daily tasks.**
+* **IAM User:** Created for daily work. 
+    * **IAM Admin:** You can create an IAM User with **Full Administrator Permissions**. This user can manage everything (create users, groups, restrict accounts, etc.) while the Root account stays protected.
+    * **Hierarchy:** From this Admin user, you can create other users with equal or lesser permissions based on their job functions.
+
+### 2. IAM Groups & Roles
+* **Groups:** A collection of users (e.g., "Finance", "Devs"). It's easier to manage permissions for a group than for each individual.
+* **Roles:** Think of a Role as a **temporary hat** that an AWS service or a user wears to perform a specific task.
+    * **Deep Dive into Roles:** Roles do not have passwords or keys. They use temporary security tokens.
+    * **Example 1 (Service Role):** You have an **EC2 Instance** (virtual server) that needs to upload files to an **S3 Bucket** (storage). Instead of putting your password inside the server, you give the EC2 a **Role** that allows it to talk to S3.
+    * **Example 2 (Cross-Account):** You can create a Role to allow a user from another AWS account to access resources in your account securely.
+
+### 3. Security Protocols
+* **Principle of Least Privilege:** Users should only have the permissions they strictly need.
+* **MFA (Multi-Factor Authentication):** **Mandatory.** An extra layer of security. You should enable this for the Root User and all IAM Users.
+
+### 4. Ways to Access AWS
+1. **AWS Management Console:** Web Browser interface.
+2. **AWS CLI (Command Line Interface):** Terminal access using **Access Keys**.
+3. **AWS SDK:** Programmatic access for applications (code).
