@@ -35,7 +35,8 @@ Security and Compliance is a shared responsibility between AWS and the customer.
 * **AWS (Security OF the Cloud):** Responsible for the physical infrastructure (Hardware, Software, Facilities).
 * **Customer (Security IN the Cloud):** Responsible for data encryption, Identity Access Management (IAM), and network firewall configuration.
 
-  ---
+---
+
 ## 🔐 Section 4: Identity and Access Management (IAM)
 
 ### 1. Root Account Security & Identity Isolation Strategy
