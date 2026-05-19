@@ -37,29 +37,58 @@ Security and Compliance is a shared responsibility between AWS and the customer.
 
   ---
 
-## Section 4: IAM - Identity and Access Management 🔐
+## 🔐 Section 4: Identity and Access Management (IAM)
 
-IAM is the administrative service that manages who can access your AWS environment and what they can do.
+### 1. Root Account Security Audit
+Before establishing identity delegation, a foundational security posture review was performed on the master Root account.
 
-### 1. The Root User vs. IAM Users
-* **Root User:** The account creator. It has "God Mode" (full access). 
-    * **Best Practice:** Use it ONLY for initial setup and emergency tasks. **Never use it for daily tasks.**
-* **IAM User:** Created for daily work. 
-    * **IAM Admin:** You can create an IAM User with **Full Administrator Permissions**. This user can manage everything (create users, groups, restrict accounts, etc.) while the Root account stays protected.
-    * **Hierarchy:** From this Admin user, you can create other users with equal or lesser permissions based on their job functions.
+<p align="center">
+  <img src="img/01-root-dashboard.jpg" alt="AWS IAM Root Dashboard Status" width="850px">
+</p>
 
-### 2. IAM Groups & Roles
-* **Groups:** A collection of users (e.g., "Finance", "Devs"). It's easier to manage permissions for a group than for each individual.
-* **Roles:** Think of a Role as a **temporary hat** that an AWS service or a user wears to perform a specific task.
-    * **Deep Dive into Roles:** Roles do not have passwords or keys. They use temporary security tokens.
-    * **Example 1 (Service Role):** You have an **EC2 Instance** (virtual server) that needs to upload files to an **S3 Bucket** (storage). Instead of putting your password inside the server, you give the EC2 a **Role** that allows it to talk to S3.
-    * **Example 2 (Cross-Account):** You can create a Role to allow a user from another AWS account to access resources in your account securely.
+* **Governance Verification:** Multi-Factor Authentication (MFA) is fully enforced for the Root principal, and no active programmatic Access Keys exist, mitigating critical structural exposure risks.
 
-### 3. Security Protocols
-* **Principle of Least Privilege:** Users should only have the permissions they strictly need.
-* **MFA (Multi-Factor Authentication):** **Mandatory.** An extra layer of security. You should enable this for the Root User and all IAM Users.
+---
 
-### 4. Ways to Access AWS
-1. **AWS Management Console:** Web Browser interface.
-2. **AWS CLI (Command Line Interface):** Terminal access using **Access Keys**.
-3. **AWS SDK:** Programmatic access for applications (code).
+### 2. Group-Based Permissions Architecture
+To eliminate the risky anti-pattern of attaching security policies directly to individual human users, a structural identity container was provisioned.
+
+<p align="center">
+  <img src="img/02-create-group.jpg" alt="IAM Group Creation and Policy Attachment" width="850px">
+</p>
+
+* **Access Control Mapping:** A user group designated as `Admin` was created. The AWS-managed policy **`AdministratorAccess`** was attached directly to the group structure, and the target user identity was assigned as a structural member.
+
+---
+
+### 3. Secure Initial Credential Lifecycle
+Upon structural deployment, the framework generated the administrative authentication parameters and provided strict baseline security warnings.
+
+<p align="center">
+  <img src="img/03-credentials-csv.jpg" alt="AWS Secure Credential Retrieval" width="850px">
+</p>
+
+* **Operational Security (OPSEC):** The initial `.csv` access file was downloaded for temporary processing and immediate transition into an encrypted credential store. This stage complies with AWS identity guidelines, noting that these specific credentials cannot be recovered or displayed again once the lifecycle wizard terminates.
+
+---
+
+### 4. Permissions Audit & Access Inheritance Verification
+An explicit post-deployment audit was executed directly on the user profile to validate the active security boundaries.
+
+<p align="center">
+  <img src="img/04-permissions-audit.jpg" alt="IAM User Permissions Verification" width="850px">
+</p>
+
+* **Privilege Separation Check:** The user identity contains zero direct or inline policy attachments. The active `AdministratorAccess` boundary reports its type explicitly as **AWS managed - via group**, validating successful policy inheritance through the centralized `admin` group.
+
+---
+
+### 5. Concurrent Session Validation (Root vs. IAM Administrative User)
+To complete the hands-on lab pipeline, a side-by-side validation test was executed across isolated runtime contexts to observe parallel operational behaviors.
+
+<p align="center">
+  <img src="img/05-session-validation.jpg" alt="AWS Concurrent Sessions Split View" width="850px">
+</p>
+
+* **Dual-Boundary Execution:** * **Left Window (Root Session):** Maintains global monitoring posture over the organization framework.
+  * **Right Window (IAM User Session):** Functions under restricted operational sovereignty via the custom account organization alias endpoint, successfully insulating daily operations from master Root credentials.
