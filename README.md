@@ -93,3 +93,30 @@ To complete the hands-on lab pipeline, a side-by-side validation test was execut
 
 * **Dual-Boundary Execution:** * **Left Window (Root Session):** Maintains global monitoring posture over the organization framework.
   * **Right Window (IAM User Session):** Functions under restricted operational sovereignty via the custom account organization alias endpoint, successfully insulating daily operations from master Root credentials.
+
+  ---
+
+### 6. Dynamic Policy Evaluation & Least Privilege Enforcement (Custom Lab)
+To validate the **Principle of Least Privilege** and analyze how the AWS IAM evaluation engine handles authorization limits in real-time, a custom architectural scenario was simulated. This lab demonstrates explicit privilege separation and defense-in-depth within a corporate cloud infrastructure.
+
+<p align="center">
+  <img src="img/06-iam-access-denied.jpg" alt="AWS IAM Least Privilege Enforcement Error" width="850px">
+</p>
+
+* **The Strategy & Architecture:**
+  * Operating from the core administrative tier (`example-user-erick`), a dedicated, non-administrative auditing identity named **`erick-auditor`** was provisioned.
+  * To centralize access control and eliminate high-risk direct user-policy mappings, a functional IAM Group named **`security-audit-team`** was created.
+  * The AWS-managed policy **`IAMReadOnlyAccess`** was attached strictly to this group container, enforcing a metadata-only operational boundary for any assigned security principals.
+
+* **The Authorization Stress Test (Exploitation Phase):**
+  * An isolated active session was initialized using the restricted **`erick-auditor`** credentials.
+  * To test policy boundaries, an unauthorized write action was attempted by trying to provision a new structural entity named `test-developers` via the IAM User Groups console.
+  * **The Result (Enforced Defense):** The AWS IAM evaluation engine immediately intercepted the API call, dropping an explicit **Access Denied** structural alert. Because the active user session lacked the explicit `iam:CreateGroup` privilege, the system successfully mitigated an unauthorized privilege escalation attempt.
+
+<p align="center">
+  <img src="img/07-iam-json-policy.jpg" alt="AWS IAM Read Only JSON Policy Structure" width="850px">
+</p>
+
+* **JSON Underlying Logic Audit:**
+  * Inspecting the backend **`IAMReadOnlyAccess`** JSON schema highlights exactly how AWS bounds this session. While administrative policies use broad wildcards (`"Action": "*"`), this restricted architecture wraps execution limits tightly around metadata query verbs like **`Get*`** and **`List*`**. 
+  * It also safely restricts the account's operational blast radius by strictly allowing read-only compliance actions, such as `iam:GenerateCredentialReport` and `iam:SimulateCustomPolicy`.
