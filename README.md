@@ -1,3 +1,5 @@
+⚠️ Note: This repository is a Work in Progress (WIP) as I progress through my AWS cloud journey
+
 # aws-cloud-practitioner-studies
 Notes, concepts, and hands-on labs for the AWS Certified Cloud Practitioner certification.
 
